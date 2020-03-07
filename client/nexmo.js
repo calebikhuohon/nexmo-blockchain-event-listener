@@ -53,31 +53,33 @@ contract.methods.sendMessage('0x04d4BD450439729e204c97201f2094a541701Dcb', messa
 });
 
 // Send message to the client
-contract.once('NewText', function (error, event) {
+contract.events.NewText(function (error, event) {
     if (error) {
         console.log('error', error);
     } else {
         console.log('event:--------------------', event);
-        nexmo.conversations.events.create(NEXMO_CONVERSATION_ID, {
-            "type": "text:delivered",
-            "from": NEXMO_MEMBER_ID,
-            "body": {
-                "text": data
-            }
-        }, (error, result) => {
-            if (error) {
-                console.error(error);
-            } else {
-                console.log('result:------------', result);
-                console.log('data:---------------', data);
 
-            }
-        });
     }
+}).on('data', function (data) {
+    nexmo.conversations.events.create(NEXMO_CONVERSATION_ID, {
+        "type": "text:delivered",
+        "from": NEXMO_MEMBER_ID,
+        "body": {
+            "text": data
+        }
+    }, (error, result) => {
+        if (error) {
+            console.error(error);
+        } else {
+            console.log('result:------------', result);
+            console.log('data:---------------', data);
+
+        }
+    });
 })
 
-contract.events.allEvents(function(err, res) {
-    if(err) {
+contract.events.allEvents(function (err, res) {
+    if (err) {
         console.log(err)
     }
     console.log(res)
